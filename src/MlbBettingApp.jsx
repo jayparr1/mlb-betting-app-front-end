@@ -30,11 +30,11 @@ export default function MlbBettingApp() {
       .catch((err) => console.error("Error fetching results:", err));
   }, []);
 
-  const filteredPicks = picks.filter((pick) => {
+  const filteredPicks = Array.isArray(picks) ? picks.filter((pick) => {
     if (showEVOnly && pick.ev <= 0) return false;
     if (showParlayOnly && !pick.parlay) return false;
     return true;
-  });
+  }) : [];
 
   const getResult = (matchup, recommendation) => {
     const game = results[matchup];
@@ -103,6 +103,3 @@ export default function MlbBettingApp() {
     </div>
   );
 }
-
-
-export default MlbBettingApp;
