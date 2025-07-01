@@ -45,13 +45,13 @@ export default function MlbBettingApp() {
       <h1 className="text-2xl font-bold mb-6 text-center">MLB Daily Betting Picks</h1>
       <div className="flex flex-col md:flex-row md:justify-center gap-4 mb-6">
         <button
-          className={\`px-4 py-2 rounded-full border \${showEVOnly ? "bg-green-500 text-white" : "bg-white"}\`}
+          className={`px-4 py-2 rounded-full border ${showEVOnly ? "bg-green-500 text-white" : "bg-white"}`}
           onClick={() => setShowEVOnly(!showEVOnly)}
         >
           {showEVOnly ? "Showing +EV Only" : "Show +EV Only"}
         </button>
         <button
-          className={\`px-4 py-2 rounded-full border \${showParlayOnly ? "bg-blue-500 text-white" : "bg-white"}\`}
+          className={`px-4 py-2 rounded-full border ${showParlayOnly ? "bg-blue-500 text-white" : "bg-white"}`}
           onClick={() => setShowParlayOnly(!showParlayOnly)}
         >
           {showParlayOnly ? "Showing Parlay Picks" : "Show Parlay Picks"}
