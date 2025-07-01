@@ -14,7 +14,12 @@ export default function MlbBettingApp() {
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched picks:", data);
-        setPicks(Array.isArray(data) ? data : []);
+        if (Array.isArray(data)) {
+          setPicks(data);
+        } else {
+          console.warn("Non-array picks response:", data);
+          setPicks([]);
+        }
         setHistory((prev) => [...prev, { date: new Date().toISOString(), picks: data }]);
         setLoading(false);
       })
