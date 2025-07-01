@@ -6,7 +6,14 @@ export default function MlbBettingApp() {
   const [loading, setLoading] = useState(true);
   const [showEVOnly, setShowEVOnly] = useState(false);
   const [showParlayOnly, setShowParlayOnly] = useState(false);
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState(() => {
+    try {
+      const saved = localStorage.getItem("mlb_pick_history");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [results, setResults] = useState({});
 
   useEffect(() => {
@@ -14,7 +21,10 @@ export default function MlbBettingApp() {
       .then((res) => res.json())
       .then((data) => {
         setPicks(Array.isArray(data) ? data : []);
-        setHistory((prev) => [...prev, { date: new Date().toISOString(), picks: data }]);
+        const newEntry = { date: new Date().toISOString(), picks: data };
+        const updatedHistory = [...history, newEntry];
+        setHistory(updatedHistory);
+        localStorage.setItem("mlb_pick_history", JSON.stringify(updatedHistory));
         setLoading(false);
       })
       .catch((err) => {
@@ -35,10 +45,13 @@ export default function MlbBettingApp() {
     return true;
   });
 
+  const normalize = (str) => str?.toLowerCase().replace(/[^a-z0-9]/gi, "").trim();
+
   const getResult = (matchup, recommendation) => {
-    const game = results[matchup];
+    const normalizedKey = normalize(matchup);
+    const game = Object.entries(results).find(([key]) => normalize(key) === normalizedKey);
     if (!game) return null;
-    return game.result === recommendation ? "Win" : "Loss";
+    return game[1].result === recommendation ? "Win" : "Loss";
   };
 
   return (
@@ -46,13 +59,13 @@ export default function MlbBettingApp() {
       <h1 className="text-3xl font-extrabold mb-6 text-center text-gray-800 shadow-lg">MLB Daily Betting Picks</h1>
       <div className="flex flex-col md:flex-row md:justify-center gap-4 mb-6">
         <button
-          className={`px-4 py-2 rounded-full border shadow ${showEVOnly ? "bg-green-600 text-white" : "bg-white text-gray-800"}`}
+          className={\`px-4 py-2 rounded-full border shadow \${showEVOnly ? "bg-green-600 text-white" : "bg-white text-gray-800"}\`}
           onClick={() => setShowEVOnly(!showEVOnly)}
         >
           {showEVOnly ? "Showing +EV Only" : "Show +EV Only"}
         </button>
         <button
-          className={`px-4 py-2 rounded-full border shadow ${showParlayOnly ? "bg-blue-600 text-white" : "bg-white text-gray-800"}`}
+          className={\`px-4 py-2 rounded-full border shadow \${showParlayOnly ? "bg-blue-600 text-white" : "bg-white text-gray-800"}\`}
           onClick={() => setShowParlayOnly(!showParlayOnly)}
         >
           {showParlayOnly ? "Showing Parlay Picks" : "Show Parlay Picks"}
@@ -74,7 +87,7 @@ export default function MlbBettingApp() {
               <div className="text-gray-600">Away Pitcher: <span className="font-medium">{pick.away_pitcher || "TBD"}</span></div>
               <div className="text-gray-600">Home Pitcher: <span className="font-medium">{pick.home_pitcher || "TBD"}</span></div>
               <div>Recommendation: <strong>{pick.recommendation || "N/A"}</strong></div>
-              <div>Win Probability: <strong>{pick.winProb ? `${Math.round(pick.winProb * 100)}%` : "N/A"}</strong></div>
+              <div>Win Probability: <strong>{pick.winProb ? \`\${Math.round(pick.winProb * 100)}%\` : "N/A"}</strong></div>
               <div>Odds: <strong>{typeof pick.odds === "number" ? (pick.odds > 0 ? "+" + pick.odds : pick.odds) : "N/A"}</strong></div>
               <div>Expected Value: <strong>{typeof pick.ev === "number" ? pick.ev : "N/A"}</strong></div>
               <div>Parlay Worthy: <strong>{typeof pick.parlay === "boolean" ? (pick.parlay ? "Yes" : "No") : "N/A"}</strong></div>
