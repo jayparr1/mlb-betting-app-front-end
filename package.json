@@ -1,6 +1,6 @@
 
 {
-  "name": "mlb-betting-frontend",
+  "name": "mlb-betting-app",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
@@ -15,7 +15,6 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "postinstall": "tailwindcss build src/index.css -o src/tailwind.output.css"
+    "build": "react-scripts build"
   }
 }

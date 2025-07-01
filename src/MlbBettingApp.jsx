@@ -13,7 +13,6 @@ export default function MlbBettingApp() {
     fetch("https://mlb-betting-app-1.onrender.com/api/mlb/picks")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched picks:", data);
         setPicks(Array.isArray(data) ? data : []);
         setHistory((prev) => [...prev, { date: new Date().toISOString(), picks: data }]);
         setLoading(false);
@@ -84,22 +83,6 @@ export default function MlbBettingApp() {
           ))}
         </div>
       )}
-
-      <div className="mt-12">
-        <h2 className="text-xl font-bold text-center mb-4 text-gray-800">Pick History (Last {history.length} Days)</h2>
-        <ul className="space-y-4">
-          {history.slice(-5).map((entry, i) => (
-            <li key={i} className="bg-white p-4 rounded shadow">
-              <div className="text-sm text-gray-500 mb-2">{new Date(entry.date).toLocaleString()}</div>
-              {entry.picks.map((p, idx) => (
-                <div key={idx} className="text-sm text-gray-800">
-                  {p.matchup || "N/A"}: <strong>{p.recommendation || "N/A"}</strong> — Odds: {typeof p.odds === "number" ? p.odds : "N/A"}, EV: {typeof p.ev === "number" ? p.ev : "N/A"}, Result: {getResult(p.matchup, p.recommendation) || "Pending"}
-                </div>
-              ))}
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 }
