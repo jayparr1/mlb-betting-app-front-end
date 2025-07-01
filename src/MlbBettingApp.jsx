@@ -103,3 +103,6 @@ export default function MlbBettingApp() {
     </div>
   );
 }
+
+
+export default MlbBettingApp;
